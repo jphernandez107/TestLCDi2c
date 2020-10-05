@@ -81,7 +81,7 @@ void HAL_MspInit(void)
 
 /**
 * @brief ADC MSP Initialization
-* This function configures the hardware resources used in this example
+* This function configures the hardware resources used in this degree
 * @param hadc: ADC handle pointer
 * @retval None
 */
@@ -117,7 +117,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 
 /**
 * @brief ADC MSP De-Initialization
-* This function freeze the hardware resources used in this example
+* This function freeze the hardware resources used in this degree
 * @param hadc: ADC handle pointer
 * @retval None
 */
@@ -147,7 +147,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 
 /**
 * @brief I2C MSP Initialization
-* This function configures the hardware resources used in this example
+* This function configures the hardware resources used in this degree
 * @param hi2c: I2C handle pointer
 * @retval None
 */
@@ -183,7 +183,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
 
 /**
 * @brief I2C MSP De-Initialization
-* This function freeze the hardware resources used in this example
+* This function freeze the hardware resources used in this degree
 * @param hi2c: I2C handle pointer
 * @retval None
 */
@@ -214,7 +214,7 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
 
 /**
 * @brief TIM_Base MSP Initialization
-* This function configures the hardware resources used in this example
+* This function configures the hardware resources used in this degree
 * @param htim_base: TIM_Base handle pointer
 * @retval None
 */
@@ -236,7 +236,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 
 /**
 * @brief TIM_Base MSP De-Initialization
-* This function freeze the hardware resources used in this example
+* This function freeze the hardware resources used in this degree
 * @param htim_base: TIM_Base handle pointer
 * @retval None
 */

@@ -69,22 +69,30 @@ static void MX_ADC1_Init(void);
 
 void Display_Temp(float temp) {
     lcd16x2_i2c_setCursor(0, 0);
-    lcd16x2_i2c_printf("Temp: %0.2fC    ", temp);
+    lcd16x2_i2c_print_custom_char(THERMOMETER);
+    lcd16x2_i2c_printf("%0.1f", temp);
+    lcd16x2_i2c_print_custom_char(DEGREE);
+    lcd16x2_i2c_printf("          ");
 }
 
 void Display_Hum(float hum) {
-    lcd16x2_i2c_setCursor(1, 0);
-    lcd16x2_i2c_printf("Hum: %0.2f%c    ", hum, '%');
+    lcd16x2_i2c_setCursor(0, 7);
+    lcd16x2_i2c_print_custom_char(DROP);
+    lcd16x2_i2c_printf("%0.0f%c ", hum, '%');
+//    lcd16x2_i2c_print_custom_char(LIGHTBULB);
 }
 
 void Display_CO2(int ppm) {
     lcd16x2_i2c_setCursor(1,0);
-    lcd16x2_i2c_printf("CO2: %d ppm    ", ppm);
+    lcd16x2_i2c_print_custom_char(CO2_1);
+    lcd16x2_i2c_print_custom_char(CO2_2);
+    lcd16x2_i2c_print_custom_char(CO2_3);
+    lcd16x2_i2c_printf("%d", ppm);
+    lcd16x2_i2c_print_custom_char(PPM_1);
+    lcd16x2_i2c_print_custom_char(PPM_2);
+    lcd16x2_i2c_printf("  ");
 }
 
-//void ADC_IRQHandler() {
-//    HAL_ADC_IRQHandler(&hadc1);
-//}
 /* USER CODE END 0 */
 
 /**
@@ -126,7 +134,7 @@ int main(void)
 //    HAL_ADCEx_Calibration_Start(&hadc1);
 
 
-  MG811_Init(&MG811_CO2Sensor, 10, 0.99);
+  MG811_Init(&MG811_CO2Sensor, 10, 0.999);
   MG811_Calibrate(&MG811_CO2Sensor, &hadc1);
   if (lcd16x2_i2c_init(&hi2c1)) {
       HAL_GPIO_WritePin(GPIOD, LD4_Pin, GPIO_PIN_SET);
@@ -135,7 +143,6 @@ int main(void)
   lcd16x2_i2c_printf("Initializing...");
   HAL_Delay(1000);
 
-  lcd16x2_i2c_clear();
 
   /* USER CODE END 2 */
 
@@ -146,14 +153,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    lcd16x2_i2c_clear();
-
     DHT_GetData(&DHT22);
     Display_Temp(DHT22.Temperature);
     Display_Hum(DHT22.Humidity);
-    HAL_Delay(2000);
-
-    Display_Temp(DHT22.Temperature);
     Display_CO2(MG811_Read(&MG811_CO2Sensor, &hadc1));
     HAL_Delay(2000);
 

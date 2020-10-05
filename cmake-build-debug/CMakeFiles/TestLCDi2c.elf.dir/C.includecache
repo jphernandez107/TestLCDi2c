@@ -336,6 +336,16 @@ stm32f4xx_hal_tim_ex.h
 stm32f4xx_hal_def.h
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h
 
+C:/Users/juan_/CLionProjects/TestLCDi2c/Core/Src/lcd16x2_i2c.c
+lcd16x2_i2c.h
+C:/Users/juan_/CLionProjects/TestLCDi2c/Core/Src/lcd16x2_i2c.h
+stdio.h
+-
+string.h
+-
+stdarg.h
+-
+
 C:/Users/juan_/CLionProjects/TestLCDi2c/Core/Src/main.c
 main.h
 C:/Users/juan_/CLionProjects/TestLCDi2c/Core/Src/main.h

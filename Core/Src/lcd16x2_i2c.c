@@ -48,6 +48,18 @@ static uint8_t LCD_I2C_SLAVE_ADDRESS=0;
 #define LCD_I2C_SLAVE_ADDRESS_0  0x4E
 #define LCD_I2C_SLAVE_ADDRESS_1  0x7E
 
+uint8_t customChars[9][8] = {
+        {0b01100,0b10010,0b10010,0b01100,0b00000,0b00000,0b00000,0b00000},  // Degree
+        {0b00100,0b01010,0b01010,0b01110,0b01110,0b11111,0b11111,0b01110},  // Thermometer
+        {0b00100,0b00100,0b01110,0b01110,0b11111,0b11101,0b11001,0b01110},  // Drop
+        {0b00000,0b00000,0b00111,0b01000,0b01000,0b00111,0b00000,0b00000},  // co2-1
+        {0b00000,0b00000,0b01110,0b10001,0b10001,0b01110,0b00000,0b00000},  // co2-2
+        {0b00000,0b00000,0b00000,0b11100,0b00100,0b11100,0b10000,0b11100},  // co2-3
+        {0b01110,0b01001,0b01110,0b01000,0b01001,0b00010,0b00100,0b00000},  // ppm-1
+        {0b00100,0b01000,0b10000,0b00000,0b11010,0b10101,0b10101,0b10001},  // ppm-2
+//        {0b01110,0b10001,0b10001,0b01010,0b01110,0b00000,0b01110,0b00000},  // Lightbulb
+};
+
 /* Private functions */
 static void lcd16x2_i2c_sendCommand(uint8_t command)
 {
@@ -124,6 +136,8 @@ bool lcd16x2_i2c_init(I2C_HandleTypeDef *pI2cHandle)
     HAL_Delay(1);
     lcd16x2_i2c_sendCommand(LCD_DISPLAYCONTROL | LCD_DISPLAY_D);
     HAL_Delay(3);
+
+    lcd16x2_i2c_create_custom_chars();
 
     return true;
 }
@@ -251,4 +265,22 @@ void lcd16x2_i2c_printf(const char* str, ...)
     {
         lcd16x2_i2c_sendData((uint8_t)stringArray[i]);
     }
+}
+
+void lcd16x2_i2c_create_char(uint8_t location, uint8_t newChar[]) {
+    location &= 0x7;
+    lcd16x2_i2c_sendCommand(LCD_SETCGRAMADDR | (location << 3));
+    for (int i=0; i<8; i++) {
+        lcd16x2_i2c_sendData(newChar[i]);
+    }
+}
+
+void lcd16x2_i2c_create_custom_chars(){
+    for (int i=0; i<CUSTOM_CHAR_ARRAY_SIZE; i++) {
+        lcd16x2_i2c_create_char(i, customChars[i]);
+    }
+}
+
+void lcd16x2_i2c_print_custom_char(const char customChar) {
+    lcd16x2_i2c_sendData(customChar);
 }

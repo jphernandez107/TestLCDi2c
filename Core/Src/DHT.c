@@ -40,6 +40,7 @@ void DHT_Start (void) {
 	Set_Pin_Output (DHT_PORT, DHT_PIN);  // set the pin as output
 	HAL_GPIO_WritePin (DHT_PORT, DHT_PIN, 0);   // pull the pin low
 	delay (1200);  // >1ms delay
+//    delay_ms(19); //DHT11
 
     /********  Tgo  ********/
     Set_Pin_Input(DHT_PORT, DHT_PIN);
@@ -100,6 +101,11 @@ void DHT_GetData (DHT_DataTypeDef *DHT_Data) {
         DHT_Data->Temperature = ((Temp_byte1<<8)|Temp_byte2) / 10.0;
         DHT_Data->Humidity = ((Rh_byte1<<8)|Rh_byte2) / 10.0;
 	}
+//      DHT11
+//	if (SUM == (uint8_t)(Rh_byte1+Rh_byte2+Temp_byte1+Temp_byte2)){
+//        DHT_Data->Temperature = (float)Temp_byte1 / 1.0;
+//        DHT_Data->Humidity = Rh_byte1 / 1.0;
+//	}
 }
 
 
