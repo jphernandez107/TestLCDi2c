@@ -65,8 +65,6 @@
 //    MG811_Data->co2ppm = co2_d;
 //}
 
-
-
 /************************Hardware Related Macros************************************/
 #define         MG_PIN                       0     //define which analog input channel you are going to use
 #define         BOOL_PIN                     2
@@ -89,10 +87,6 @@ float           CO2Curve[3]  =  {2.602f,ZERO_POINT_VOLTAGE,(REACTION_VOLTGAE/(2.
                                                                         ///"approximately equivalent" to the original curve.
                                                                         ///data format:{ x, y, slope}; point1: (lg400, 0.324), point2: (lg4000, 0.280)
                                                                         ///slope = ( reaction voltage ) / (log400 –log1000)
-
-
-
-
 
 
 
