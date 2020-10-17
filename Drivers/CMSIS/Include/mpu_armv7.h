@@ -80,7 +80,7 @@
 /**
 * MPU Memory Access Attributes
 * 
-* \param TypeExtField      Type extension field, allows you to configure memory access type, for degree strongly ordered, peripheral.
+* \param TypeExtField      Type extension field, allows you to configure memory access type, for example strongly ordered, peripheral.
 * \param IsShareable       Region is shareable between multiple bus masters.
 * \param IsCacheable       Region is cacheable, i.e. its value may be kept in cache.
 * \param IsBufferable      Region is bufferable, i.e. using write-back caching. Cacheable but non-bufferable regions use write-through policy.
@@ -98,7 +98,7 @@
 * \param AccessPermission  Data access permissions, allows you to configure read/write access for User and Privileged mode.
 * \param AccessAttributes  Memory access attribution, see \ref ARM_MPU_ACCESS_.
 * \param SubRegionDisable  Sub-region disable field.
-* \param Size              Region size of the region to be configured, for degree 4K, 8K.
+* \param Size              Region size of the region to be configured, for example 4K, 8K.
 */
 #define ARM_MPU_RASR_EX(DisableExec, AccessPermission, AccessAttributes, SubRegionDisable, Size)      \
   ((((DisableExec ) << MPU_RASR_XN_Pos) & MPU_RASR_XN_Msk)                                          | \
@@ -110,12 +110,12 @@
 * 
 * \param DisableExec       Instruction access disable bit, 1= disable instruction fetches.
 * \param AccessPermission  Data access permissions, allows you to configure read/write access for User and Privileged mode.
-* \param TypeExtField      Type extension field, allows you to configure memory access type, for degree strongly ordered, peripheral.
+* \param TypeExtField      Type extension field, allows you to configure memory access type, for example strongly ordered, peripheral.
 * \param IsShareable       Region is shareable between multiple bus masters.
 * \param IsCacheable       Region is cacheable, i.e. its value may be kept in cache.
 * \param IsBufferable      Region is bufferable, i.e. using write-back caching. Cacheable but non-bufferable regions use write-through policy.
 * \param SubRegionDisable  Sub-region disable field.
-* \param Size              Region size of the region to be configured, for degree 4K, 8K.
+* \param Size              Region size of the region to be configured, for example 4K, 8K.
 */                         
 #define ARM_MPU_RASR(DisableExec, AccessPermission, TypeExtField, IsShareable, IsCacheable, IsBufferable, SubRegionDisable, Size) \
   ARM_MPU_RASR_EX(DisableExec, AccessPermission, ARM_MPU_ACCESS_(TypeExtField, IsShareable, IsCacheable, IsBufferable), SubRegionDisable, Size)

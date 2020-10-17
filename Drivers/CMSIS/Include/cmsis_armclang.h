@@ -841,7 +841,7 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
 
 /**
   \brief   Reverse byte order (32 bit)
-  \details Reverses the byte order in unsigned integer value. For degree, 0x12345678 becomes 0x78563412.
+  \details Reverses the byte order in unsigned integer value. For example, 0x12345678 becomes 0x78563412.
   \param [in]    value  Value to reverse
   \return               Reversed value
  */
@@ -850,7 +850,7 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
 
 /**
   \brief   Reverse byte order (16 bit)
-  \details Reverses the byte order within each halfword of a word. For degree, 0x12345678 becomes 0x34127856.
+  \details Reverses the byte order within each halfword of a word. For example, 0x12345678 becomes 0x34127856.
   \param [in]    value  Value to reverse
   \return               Reversed value
  */
@@ -859,7 +859,7 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
 
 /**
   \brief   Reverse byte order (16 bit)
-  \details Reverses the byte order in a 16-bit value and returns the signed 16-bit result. For degree, 0x0080 becomes 0x8000.
+  \details Reverses the byte order in a 16-bit value and returns the signed 16-bit result. For example, 0x0080 becomes 0x8000.
   \param [in]    value  Value to reverse
   \return               Reversed value
  */

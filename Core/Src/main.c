@@ -35,6 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ADC_CHANNELS 2
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,6 +45,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 
@@ -53,11 +55,20 @@ TIM_HandleTypeDef htim3;
 MG811_DataTypeDef MG811_CO2Sensor;
 DHT_DataTypeDef DHT22;
 float BH1750_lux;
+uint32_t adc_values[ADC_CHANNELS];
+float boardTemp;
+
+float get_temp (uint32_t adc_val) {
+    //V25 = 0.76
+    //avg_slope = 0.0025
+    return ((0.76f - (3.3f/4096 * adc_val)) / 0.025f + 25);
+}
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_ADC1_Init(void);
@@ -97,6 +108,13 @@ void Display_Lux(float lux) {
     lcd16x2_i2c_setCursor(1, 9);
     lcd16x2_i2c_print_custom_char(LIGHTBULB);
     lcd16x2_i2c_printf("%0.0flux ", lux);
+}
+
+void Display_Soil_Hum(int soilHum) {
+    lcd16x2_i2c_setCursor(1, 10);
+    lcd16x2_i2c_print_custom_char(DROP);
+    lcd16x2_i2c_printf("%d%c", soilHum, '%');
+    lcd16x2_i2c_printf("  ");
 }
 
 void init_display(int waitTime) {
@@ -144,22 +162,21 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_I2C1_Init();
   MX_TIM3_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
   TimerDelay_Init();
+  HAL_ADC_Start_DMA(&hadc1, adc_values, ADC_CHANNELS);
   HAL_Delay(200);
-  /// ADC converter for Analog Read
-//  HAL_TIM_PWM_Start(&htim3, HAL_TIM_ACTIVE_CHANNEL_1);
-//    HAL_ADCEx_Calibration_Start(&hadc1);
 
   BH1750_Init(&hi2c1);
   BH1750_SetMode(CONTINUOUS_HIGH_RES_MODE_2);
 
-  MG811_Init(&MG811_CO2Sensor, 10, 0.999);
-  MG811_Calibrate(&MG811_CO2Sensor, &hadc1);
+  MG811_Init(&MG811_CO2Sensor, 10, 0.99);
+  MG811_Calibrate(&MG811_CO2Sensor, adc_values[0]);
   if (lcd16x2_i2c_init(&hi2c1)) {
       HAL_GPIO_WritePin(GPIOD, LD4_Pin, GPIO_PIN_SET);
   }
@@ -178,10 +195,12 @@ int main(void)
     DHT_GetData(&DHT22);
     Display_Temp(DHT22.Temperature);
     Display_Hum(DHT22.Humidity);
-    Display_CO2(MG811_Read(&MG811_CO2Sensor, &hadc1));
 
     if (BH1750_OK == BH1750_ReadLight(&BH1750_lux)) Display_Lux(BH1750_lux);
-    HAL_Delay(2000);
+
+    Display_CO2(MG811_Read(&MG811_CO2Sensor, adc_values[0]));
+    Display_Soil_Hum(adc_values[1]);
+    HAL_Delay(1000);
 
   }
   /* USER CODE END 3 */
@@ -203,12 +222,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 4;
   RCC_OscInitStruct.PLL.PLLN = 100;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 8;
@@ -253,14 +271,14 @@ static void MX_ADC1_Init(void)
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ScanConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.NbrOfConversion = 2;
+  hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
@@ -271,6 +289,14 @@ static void MX_ADC1_Init(void)
   sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Rank = 2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -357,6 +383,22 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 
