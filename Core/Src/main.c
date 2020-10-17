@@ -19,13 +19,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd16x2_i2c.h"
 #include "mg811.h"
 #include "Timer_Delay.h"
 #include "DHT.h"
+#include <BH1750.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +52,7 @@ TIM_HandleTypeDef htim3;
 /* USER CODE BEGIN PV */
 MG811_DataTypeDef MG811_CO2Sensor;
 DHT_DataTypeDef DHT22;
+float BH1750_lux;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,6 +91,12 @@ void Display_CO2(int ppm) {
     lcd16x2_i2c_print_custom_char(PPM_1);
     lcd16x2_i2c_print_custom_char(PPM_2);
     lcd16x2_i2c_printf("  ");
+}
+
+void Display_Lux(float lux) {
+    lcd16x2_i2c_setCursor(1, 9);
+    lcd16x2_i2c_print_custom_char(LIGHTBULB);
+    lcd16x2_i2c_printf("%0.0flux ", lux);
 }
 
 void init_display(int waitTime) {
@@ -148,6 +155,8 @@ int main(void)
 //  HAL_TIM_PWM_Start(&htim3, HAL_TIM_ACTIVE_CHANNEL_1);
 //    HAL_ADCEx_Calibration_Start(&hadc1);
 
+  BH1750_Init(&hi2c1);
+  BH1750_SetMode(CONTINUOUS_HIGH_RES_MODE_2);
 
   MG811_Init(&MG811_CO2Sensor, 10, 0.999);
   MG811_Calibrate(&MG811_CO2Sensor, &hadc1);
@@ -170,6 +179,8 @@ int main(void)
     Display_Temp(DHT22.Temperature);
     Display_Hum(DHT22.Humidity);
     Display_CO2(MG811_Read(&MG811_CO2Sensor, &hadc1));
+
+    if (BH1750_OK == BH1750_ReadLight(&BH1750_lux)) Display_Lux(BH1750_lux);
     HAL_Delay(2000);
 
   }
