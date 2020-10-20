@@ -70,22 +70,21 @@ static void MX_ADC1_Init(void);
 void Display_Temp(float temp) {
     lcd16x2_i2c_setCursor(0, 0);
     lcd16x2_i2c_print_custom_char(THERMOMETER);
-    lcd16x2_i2c_printf("%0.1f", temp);
-    lcd16x2_i2c_print_custom_char(DEGREE);
-    lcd16x2_i2c_printf("          ");
+    lcd16x2_i2c_printf("%0.1f%c", temp, (char)223);
 }
 
 void Display_Hum(float hum) {
+    if (hum >= 100) hum = 99;
     lcd16x2_i2c_setCursor(0, 7);
     lcd16x2_i2c_print_custom_char(DROP);
-    lcd16x2_i2c_printf("%0.0f%c ", hum, '%');
+    lcd16x2_i2c_printf("%0.0f%c", hum, '%');
 //    lcd16x2_i2c_print_custom_char(LIGHTBULB);
 }
 
 void Display_CO2(int ppm) {
+    if (ppm > 10000) ppm = 9999;
     lcd16x2_i2c_setCursor(1,0);
-    lcd16x2_i2c_print_custom_char(CO2_1);
-    lcd16x2_i2c_print_custom_char(CO2_2);
+    lcd16x2_i2c_printf("co");
     lcd16x2_i2c_print_custom_char(CO2_3);
     lcd16x2_i2c_printf("%d", ppm);
     lcd16x2_i2c_print_custom_char(PPM_1);
@@ -93,6 +92,22 @@ void Display_CO2(int ppm) {
     lcd16x2_i2c_printf("  ");
 }
 
+void init_display(int waitTime) {
+    int delay = waitTime / 16 / 6;
+    lcd16x2_i2c_clear();
+    lcd16x2_i2c_create_init_custom_chars();
+    lcd16x2_i2c_setCursor(0,0);
+    lcd16x2_i2c_printf("Initializing...");
+    for (int i=0; i<16; i++) {
+        for (int j=0; j<INIT_CUSTOM_CHAR_ARRAY_SIZE; j++) {
+            lcd16x2_i2c_setCursor(1, i);
+            lcd16x2_i2c_print_custom_char(j);
+            HAL_Delay(delay);
+        }
+    }
+    lcd16x2_i2c_clear();
+    lcd16x2_i2c_create_custom_chars();
+}
 /* USER CODE END 0 */
 
 /**
@@ -139,9 +154,7 @@ int main(void)
   if (lcd16x2_i2c_init(&hi2c1)) {
       HAL_GPIO_WritePin(GPIOD, LD4_Pin, GPIO_PIN_SET);
   }
-  lcd16x2_i2c_clear();
-  lcd16x2_i2c_printf("Initializing...");
-  HAL_Delay(1000);
+  init_display(3000);
 
 
   /* USER CODE END 2 */

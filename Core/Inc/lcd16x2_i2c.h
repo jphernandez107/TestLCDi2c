@@ -76,9 +76,13 @@ void lcd_custom(unsigned char *Pattern, char Location);
 void lcd16x2_i2c_print_custom_char(char customChar);
 
 void lcd16x2_i2c_create_custom_chars();
+void lcd16x2_i2c_create_init_custom_chars();
 
-enum customChar {DEGREE, THERMOMETER, DROP, CO2_1, CO2_2, CO2_3, PPM_1, PPM_2, LIGHTBULB};
-enum charSize {CUSTOM_CHAR_ARRAY_SIZE = 8, CUSTOM_CHAR_ARRAY_BYTE_SIZE = 8};
+enum customChar {LIGHTBULB, THERMOMETER, DROP, CO2_1, CO2_2, CO2_3, PPM_1, PPM_2};
+enum initCustomChar {CERO = 0, TWENTY = 1, FORTY = 2, SIXTY = 3, EIGHTY = 4, HUNDRED = 5};
+enum charSize {CUSTOM_CHAR_ARRAY_SIZE = 8, CUSTOM_CHAR_ARRAY_BYTE_SIZE = 8, INIT_CUSTOM_CHAR_ARRAY_SIZE = 6};
+
+//uint8_t initCustomChars[6][CUSTOM_CHAR_ARRAY_BYTE_SIZE];
 
 
 #endif /* LCD16X2_I2C_H_ */
