@@ -15,12 +15,15 @@ typedef struct
     double co2_v;
 }MG811_DataTypeDef;
 
-uint32_t MG811_Read(MG811_DataTypeDef *MG811_Data, uint32_t adc_value);
+//uint32_t MG811_Read(MG811_DataTypeDef *MG811_Data, uint32_t adc_value);
+//
+//void MG811_Calibrate(MG811_DataTypeDef *MG811_Data, uint32_t adc_value);
+//
+//void MG811_Init_Default(MG811_DataTypeDef *MG811_Data);
+//
+//void MG811_Init(MG811_DataTypeDef *MG811_Data, int tries, double inertia);
 
-void MG811_Calibrate(MG811_DataTypeDef *MG811_Data, uint32_t adc_value);
-
-void MG811_Init_Default(MG811_DataTypeDef *MG811_Data);
-
-void MG811_Init(MG811_DataTypeDef *MG811_Data, int tries, double inertia);
+float MGRead(float adc_value);
+int  MGGetPercentage(float volts);
 
 #endif //TESTLCDI2C_MG811_H

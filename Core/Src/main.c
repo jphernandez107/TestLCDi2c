@@ -93,27 +93,27 @@ void Display_Hum(float hum) {
 //    lcd16x2_i2c_print_custom_char(LIGHTBULB);
 }
 
-void Display_CO2(int ppm) {
+void Display_CO2(float ppm) {
     if (ppm > 10000) ppm = 9999;
     lcd16x2_i2c_setCursor(1,0);
     lcd16x2_i2c_printf("co");
     lcd16x2_i2c_print_custom_char(CO2_3);
-    lcd16x2_i2c_printf("%d", ppm);
+    lcd16x2_i2c_printf("%0.0f", ppm);
     lcd16x2_i2c_print_custom_char(PPM_1);
     lcd16x2_i2c_print_custom_char(PPM_2);
     lcd16x2_i2c_printf("  ");
 }
 
 void Display_Lux(float lux) {
-    lcd16x2_i2c_setCursor(1, 9);
+    lcd16x2_i2c_setCursor(1, 10);
     lcd16x2_i2c_print_custom_char(LIGHTBULB);
-    lcd16x2_i2c_printf("%0.0flux ", lux);
+    lcd16x2_i2c_printf("%0.0flx ", lux);
 }
 
 void Display_Soil_Hum(int soilHum) {
-    lcd16x2_i2c_setCursor(1, 10);
-    lcd16x2_i2c_print_custom_char(DROP);
-    lcd16x2_i2c_printf("%d%c", soilHum, '%');
+    lcd16x2_i2c_setCursor(0, 12);   //0,12
+//    lcd16x2_i2c_print_custom_char(DROP);
+    lcd16x2_i2c_printf("S%d%c", soilHum, '%');
     lcd16x2_i2c_printf("  ");
 }
 
@@ -132,6 +132,17 @@ void init_display(int waitTime) {
     }
     lcd16x2_i2c_clear();
     lcd16x2_i2c_create_custom_chars();
+}
+
+uint8_t getSoilHumidity(uint16_t adc_value){
+#define INPUT_START 3600.0
+#define INPUT_END 1830.0
+#define OUTPUT_START 0.0
+#define OUTPUT_END 100.0
+
+    if (adc_value > INPUT_START) adc_value = INPUT_START;
+    if (adc_value <= INPUT_END) adc_value = INPUT_END + 1;
+    return OUTPUT_START + ((OUTPUT_END - OUTPUT_START) / (INPUT_END - INPUT_START)) * (adc_value - INPUT_START);
 }
 /* USER CODE END 0 */
 
@@ -175,12 +186,12 @@ int main(void)
   BH1750_Init(&hi2c1);
   BH1750_SetMode(CONTINUOUS_HIGH_RES_MODE_2);
 
-  MG811_Init(&MG811_CO2Sensor, 10, 0.99);
-  MG811_Calibrate(&MG811_CO2Sensor, adc_values[0]);
+//  MG811_Init(&MG811_CO2Sensor, 10, 0.99);
+//  MG811_Calibrate(&MG811_CO2Sensor, adc_values[0]);
   if (lcd16x2_i2c_init(&hi2c1)) {
       HAL_GPIO_WritePin(GPIOD, LD4_Pin, GPIO_PIN_SET);
   }
-  init_display(3000);
+  init_display(1000);
 
 
   /* USER CODE END 2 */
@@ -196,10 +207,10 @@ int main(void)
     Display_Temp(DHT22.Temperature);
     Display_Hum(DHT22.Humidity);
 
-    if (BH1750_OK == BH1750_ReadLight(&BH1750_lux)) Display_Lux(BH1750_lux);
+    Display_Soil_Hum(getSoilHumidity(adc_values[1])); //MGRead(adc_values[0])*1000);//getSoilHumidity(adc_values[1]));
+    Display_CO2(MGGetPercentage(MGRead(adc_values[0])));//adc_values[0]);//MG811_Read(&MG811_CO2Sensor, adc_values[0]));
 
-    Display_CO2(MG811_Read(&MG811_CO2Sensor, adc_values[0]));
-    Display_Soil_Hum(adc_values[1]);
+    if (BH1750_OK == BH1750_ReadLight(&BH1750_lux)) Display_Lux(BH1750_lux);
     HAL_Delay(1000);
 
   }
