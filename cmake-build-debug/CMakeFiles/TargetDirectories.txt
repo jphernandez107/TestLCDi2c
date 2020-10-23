@@ -1,3 +1,0 @@
-C:/Users/juan_/CLionProjects/TestLCDi2c/cmake-build-debug/CMakeFiles/TestLCDi2c.elf.dir
-C:/Users/juan_/CLionProjects/TestLCDi2c/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/juan_/CLionProjects/TestLCDi2c/cmake-build-debug/CMakeFiles/rebuild_cache.dir

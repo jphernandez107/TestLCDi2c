@@ -16,7 +16,7 @@
   [..]
     The I2C HAL driver can be used as follows:
 
-    (#) Declare a I2C_HandleTypeDef handle structure, for degree:
+    (#) Declare a I2C_HandleTypeDef handle structure, for example:
         I2C_HandleTypeDef  hi2c;
 
     (#)Initialize the I2C low level resources by implementing the @ref HAL_I2C_MspInit() API:
