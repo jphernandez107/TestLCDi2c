@@ -116,6 +116,7 @@ CMakeFiles/TestLCDi2c.elf.dir/Core/Src/lcd16x2_i2c.c.obj: ../Drivers/STM32F4xx_H
 CMakeFiles/TestLCDi2c.elf.dir/Core/Src/lcd16x2_i2c.c.obj: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 CMakeFiles/TestLCDi2c.elf.dir/Core/Src/lcd16x2_i2c.c.obj: ../Core/Src/lcd16x2_i2c.c
 
+CMakeFiles/TestLCDi2c.elf.dir/Core/Src/main.c.obj: ../Core/Inc/BH1750.h
 CMakeFiles/TestLCDi2c.elf.dir/Core/Src/main.c.obj: ../Core/Inc/DHT.h
 CMakeFiles/TestLCDi2c.elf.dir/Core/Src/main.c.obj: ../Core/Inc/Timer_Delay.h
 CMakeFiles/TestLCDi2c.elf.dir/Core/Src/main.c.obj: ../Core/Inc/lcd16x2_i2c.h

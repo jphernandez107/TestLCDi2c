@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../Core/Inc/BH1750.h
+
 ../Core/Inc/DHT.h
 
 ../Core/Inc/Timer_Delay.h
@@ -357,4 +359,6 @@ Timer_Delay.h
 C:/Users/juan_/CLionProjects/TestLCDi2c/Core/Src/Timer_Delay.h
 DHT.h
 C:/Users/juan_/CLionProjects/TestLCDi2c/Core/Src/DHT.h
+BH1750.h
+-
 
