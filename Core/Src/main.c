@@ -52,17 +52,11 @@ I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN PV */
-MG811_DataTypeDef MG811_CO2Sensor;
 DHT_DataTypeDef DHT22;
 float BH1750_lux;
 uint32_t adc_values[ADC_CHANNELS];
 float boardTemp;
 
-float get_temp (uint32_t adc_val) {
-    //V25 = 0.76
-    //avg_slope = 0.0025
-    return ((0.76f - (3.3f/4096 * adc_val)) / 0.025f + 25);
-}
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
