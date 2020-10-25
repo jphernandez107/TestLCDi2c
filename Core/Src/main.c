@@ -82,14 +82,14 @@ static void MX_ADC1_Init(void);
 void Display_Temp(float temp) {
     lcd16x2_i2c_setCursor(0, 0);
     lcd16x2_i2c_print_custom_char(THERMOMETER);
-    lcd16x2_i2c_printf("%0.1f%c", temp, (char)223);
+    lcd16x2_i2c_printf("%0.1f%c   ", temp, (char)223);
 }
 
 void Display_Hum(float hum) {
     if (hum >= 100) hum = 99;
     lcd16x2_i2c_setCursor(0, 7);
     lcd16x2_i2c_print_custom_char(DROP);
-    lcd16x2_i2c_printf("%0.0f%c", hum, '%');
+    lcd16x2_i2c_printf("%0.0f%c   ", hum, '%');
 //    lcd16x2_i2c_print_custom_char(LIGHTBULB);
 }
 

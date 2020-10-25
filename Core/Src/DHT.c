@@ -53,13 +53,14 @@ void DHT_Start (void) {
  **/
 uint8_t DHT_Check_Response (void) {
 	uint8_t Response = 0;
+	uint16_t timeOut = 0xfff;
 	if (!(HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)))
 	{
 		delay (80);
 		if ((HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN))) Response = 1;
 		else Response = -1;
 	}
-	while ((HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)));   // wait for the pin to go low
+	while ((HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)) && timeOut) { timeOut--; }   // wait for the pin to go low
 
 	return Response;
 }
@@ -70,16 +71,18 @@ uint8_t DHT_Check_Response (void) {
  **/
 uint8_t DHT_Read (void) {
 	uint8_t i,j;
+    uint16_t timeOut = 0xfff;
 	for (j=0;j<8;j++)
 	{
-		while (!(HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)));   // wait for the pin to go high
+		while (!(HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)) && timeOut) { timeOut--; } // wait for the pin to go high
+		timeOut = 0xfff;
 		delay (35);   // wait for 40 us
 		if (!(HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)))   // if the pin is low
 		{
 			i&= ~(1<<(7-j));   // write 0
 		}
 		else i|= (1<<(7-j));  // if the pin is high, write 1
-		while ((HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)));  // wait for the pin to go low
+		while ((HAL_GPIO_ReadPin (DHT_PORT, DHT_PIN)) && timeOut) { timeOut--; }  // wait for the pin to go low
 	}
 	return i;
 }
