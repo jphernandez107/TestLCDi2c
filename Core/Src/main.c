@@ -101,7 +101,7 @@ void Display_CO2(float ppm) {
 void Display_Lux(float lux) {
     lcd16x2_i2c_setCursor(1, 10);
     lcd16x2_i2c_print_custom_char(LIGHTBULB);
-    lcd16x2_i2c_printf("%0.0flx ", lux);
+    lcd16x2_i2c_printf("%0.0fLx  ", lux);
 }
 
 void Display_Soil_Hum(int soilHum) {
@@ -423,7 +423,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LD4_Pin|Cool_Pump_Pin|Irrigate_Pump_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PA0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
@@ -431,16 +431,39 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD4_Pin */
-  GPIO_InitStruct.Pin = LD4_Pin;
+  /*Configure GPIO pins : LD4_Pin Cool_Pump_Pin Irrigate_Pump_Pin */
+  GPIO_InitStruct.Pin = LD4_Pin|Cool_Pump_Pin|Irrigate_Pump_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD4_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Cool_Button_Pin Irrigate_Button_Pin */
+  GPIO_InitStruct.Pin = Cool_Button_Pin|Irrigate_Button_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if(GPIO_Pin == Cool_Button_Pin) {
+        HAL_GPIO_TogglePin(Cool_Pump_GPIO_Port, Cool_Pump_Pin);
+    }
+
+    if (GPIO_Pin == Irrigate_Button_Pin) {
+        HAL_GPIO_TogglePin(Irrigate_Pump_GPIO_Port, Irrigate_Pump_Pin);
+    }
+}
 /* USER CODE END 4 */
 
 /**

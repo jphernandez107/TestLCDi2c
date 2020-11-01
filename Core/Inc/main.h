@@ -60,6 +60,16 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LD4_Pin GPIO_PIN_12
 #define LD4_GPIO_Port GPIOD
+#define Cool_Pump_Pin GPIO_PIN_14
+#define Cool_Pump_GPIO_Port GPIOD
+#define Irrigate_Pump_Pin GPIO_PIN_15
+#define Irrigate_Pump_GPIO_Port GPIOD
+#define Cool_Button_Pin GPIO_PIN_0
+#define Cool_Button_GPIO_Port GPIOD
+#define Cool_Button_EXTI_IRQn EXTI0_IRQn
+#define Irrigate_Button_Pin GPIO_PIN_2
+#define Irrigate_Button_GPIO_Port GPIOD
+#define Irrigate_Button_EXTI_IRQn EXTI2_IRQn
 #define Audio_SCL_Pin GPIO_PIN_6
 #define Audio_SCL_GPIO_Port GPIOB
 #define Audio_SDA_Pin GPIO_PIN_9
